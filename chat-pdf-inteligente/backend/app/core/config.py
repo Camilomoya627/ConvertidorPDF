@@ -39,7 +39,6 @@ class Settings(BaseSettings):
 
 @lru_cache()
 def get_settings() -> Settings:
-    # Si estamos en Render, forzamos la lectura limpia eliminando espacios en blanco invisibles
     if os.getenv("SUPABASE_URL") or os.getenv("SUPABASE_SERVICE_KEY"):
         return Settings(
             openai_api_key=os.getenv("OPENAI_API_KEY", "").strip(),
