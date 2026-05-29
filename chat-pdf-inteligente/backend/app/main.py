@@ -3,7 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.core.config import get_settings
 from app.api.routes import documents, chat
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Tus imports de siempre siguen abajo:
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+# ... (el resto de tu código se queda exactamente igual)
 settings = get_settings()
 
 app = FastAPI(
