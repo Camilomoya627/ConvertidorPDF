@@ -1,0 +1,44 @@
+# ── Python ──────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.Python
+env/
+venv/
+.venv/
+ENV/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# ── Node / Frontend ──────────────────────────────────────────
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+
+# ── Environment variables ─────────────────────────────────────
+.env
+.env.local
+.env.production
+.env.*.local
+!.env.example
+
+# ── IDE ───────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+
+# ── Uploads (nunca subir PDFs al repo) ───────────────────────
+uploads/
+*.pdf
