@@ -77,6 +77,8 @@ chat-pdf-inteligente/
 └── supabase_schema.sql
 ```
 
+
+
 ---
 
 ## 🚀 Instalación local
