@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
+  // 👇 AQUÍ CAMBIAMOS EL NOMBRE DE LA VARIABLE:
+  baseURL: import.meta.env.VITE_PUBLIC_API_URL || 'http://localhost:8000',
   timeout: 60000, // 60s para uploads grandes
 })
 
