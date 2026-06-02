@@ -3,7 +3,6 @@ from pydantic_settings import BaseSettings
 from functools import lru_cache
 
 
-
 class Settings(BaseSettings):
     # OpenAI
     openai_api_key: str
@@ -26,7 +25,8 @@ class Settings(BaseSettings):
     chunk_overlap: int = 50
 
     class Config:
-        env_file = ".env"
+        # 👇 CAMBIO AQUÍ: Ignora el archivo .env si ya estamos en producción en Render
+        env_file = ".env" if os.getenv("APP_ENV") != "production" else None
         case_sensitive = False
 
     @property
@@ -40,7 +40,8 @@ class Settings(BaseSettings):
 
 @lru_cache()
 def get_settings() -> Settings:
-    if os.getenv("SUPABASE_URL") or os.getenv("SUPABASE_SERVICE_KEY"):
+    # Si estamos en producción o si las variables esenciales de Supabase existen en el entorno
+    if os.getenv("APP_ENV") == "production" or os.getenv("SUPABASE_URL"):
         return Settings(
             openai_api_key=os.getenv("OPENAI_API_KEY", "").strip(),
             supabase_url=os.getenv("SUPABASE_URL", "").strip(),
