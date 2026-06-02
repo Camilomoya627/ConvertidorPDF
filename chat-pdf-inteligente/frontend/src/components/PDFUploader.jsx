@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Upload, FileText, X, CheckCircle, AlertCircle } from 'lucide-react'
+import { Upload, FileText, X, AlertCircle } from 'lucide-react'
 import { uploadPDF } from '../services/api'
 import toast from 'react-hot-toast'
 
@@ -14,11 +14,11 @@ export function PDFUploader({ onUploadSuccess }) {
 
   const validateFile = (file) => {
     if (!file.name.toLowerCase().endsWith('.pdf')) {
-      toast.error('Solo se permiten archivos PDF')
+      toast.error('Solo se permiten archivos de formato PDF')
       return false
     }
     if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-      toast.error(`El archivo supera el límite de ${MAX_SIZE_MB}MB`)
+      toast.error(`El archivo supera el límite crítico de ${MAX_SIZE_MB}MB`)
       return false
     }
     return true
@@ -43,12 +43,12 @@ export function PDFUploader({ onUploadSuccess }) {
 
     try {
       const result = await uploadPDF(selectedFile, setProgress)
-      toast.success(`¡PDF procesado! ${result.chunks} fragmentos indexados.`)
+      toast.success(`Indexación Exitosa: ${result.chunks} vectores generados.`)
       onUploadSuccess(result)
       setSelectedFile(null)
       setProgress(0)
     } catch (err) {
-      toast.error(err.message || 'Error al subir el PDF')
+      toast.error(err.message || 'Fallo crítico al indexar el PDF')
     } finally {
       setIsUploading(false)
     }
@@ -69,27 +69,27 @@ export function PDFUploader({ onUploadSuccess }) {
           onDragLeave={() => setIsDragging(false)}
           onClick={() => inputRef.current?.click()}
           className={`
-            relative border-2 border-dashed rounded-2xl p-10 text-center cursor-pointer
-            transition-all duration-200 select-none
+            relative border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer
+            transition-all duration-300 select-none group
             ${isDragging
-              ? 'border-brand-500 bg-brand-50 scale-[1.01]'
-              : 'border-gray-200 hover:border-brand-400 hover:bg-gray-50'
+              ? 'border-indigo-500 bg-indigo-500/5 scale-[1.01] shadow-[0_0_15px_rgba(99,102,241,0.15)]'
+              : 'border-slate-800 hover:border-slate-700 bg-slate-950/40 hover:bg-slate-950/80'
             }
           `}
         >
           <div className="flex flex-col items-center gap-3">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors
-              ${isDragging ? 'bg-brand-100' : 'bg-gray-100'}`}>
-              <Upload className={`w-7 h-7 ${isDragging ? 'text-brand-600' : 'text-gray-400'}`} />
+            <div className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300
+              ${isDragging ? 'bg-indigo-500/20 text-indigo-400' : 'bg-slate-900 border border-slate-800 text-slate-400 group-hover:text-slate-300'}`}>
+              <Upload className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-semibold text-gray-700">
-                {isDragging ? 'Suelta el PDF aquí' : 'Arrastra tu PDF aquí'}
+              <p className="text-xs font-semibold text-slate-300">
+                {isDragging ? 'Suelte el archivo de inmediato' : 'Arrastra tu PDF aquí'}
               </p>
-              <p className="text-sm text-gray-400 mt-1">
-                o <span className="text-brand-600 font-medium">haz clic para seleccionar</span>
+              <p className="text-[11px] text-slate-500 mt-1">
+                o <span className="text-indigo-400 font-medium group-hover:underline">explora tus archivos</span>
               </p>
-              <p className="text-xs text-gray-400 mt-2">Solo PDF · Máximo {MAX_SIZE_MB}MB</p>
+              <p className="text-[10px] text-slate-600 mt-2">Límite del sistema: {MAX_SIZE_MB}MB por archivo</p>
             </div>
           </div>
           <input
@@ -101,52 +101,52 @@ export function PDFUploader({ onUploadSuccess }) {
           />
         </div>
       ) : (
-        <div className="border border-gray-200 rounded-2xl p-5 bg-white">
+        <div className="border border-slate-800 rounded-2xl p-4 bg-slate-950/60 backdrop-blur-sm">
           {/* File info */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0">
-              <FileText className="w-5 h-5 text-red-500" />
+          <div className="flex items-center gap-3 mb-3.5">
+            <div className="w-9 h-9 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <FileText className="w-4 h-4 text-red-400" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-gray-800 truncate text-sm">{selectedFile.name}</p>
-              <p className="text-xs text-gray-400">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+              <p className="font-medium text-slate-200 truncate text-xs">{selectedFile.name}</p>
+              <p className="text-[10px] text-slate-500 font-semibold uppercase">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
             </div>
             {!isUploading && (
-              <button onClick={clearFile} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100">
-                <X className="w-4 h-4" />
+              <button onClick={clearFile} className="text-slate-500 hover:text-slate-300 p-1.5 rounded-lg hover:bg-slate-900 border border-transparent hover:border-slate-800 transition-all">
+                <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
 
           {/* Progress bar */}
           {isUploading && (
-            <div className="mb-4">
-              <div className="flex justify-between text-xs text-gray-500 mb-1">
-                <span>Procesando PDF...</span>
-                <span>{progress}%</span>
+            <div className="mb-3.5 px-0.5">
+              <div className="flex justify-between text-[11px] text-slate-400 mb-1.5 font-medium">
+                <span className="animate-pulse flex items-center gap-1">Generando embeddings...</span>
+                <span className="text-indigo-400">{progress}%</span>
               </div>
-              <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-1.5 bg-slate-900 border border-slate-800/80 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-brand-500 rounded-full transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-violet-500 to-indigo-500 rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(99,102,241,0.5)]"
                   style={{ width: `${progress}%` }}
                 />
               </div>
             </div>
           )}
 
-          {/* Upload button */}
+          {/* Action Button */}
           <button
             onClick={handleUpload}
             disabled={isUploading}
             className={`
-              w-full py-2.5 rounded-xl font-semibold text-sm transition-all duration-200
+              w-full py-2 rounded-xl font-bold text-xs tracking-wide uppercase transition-all duration-200
               ${isUploading
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-brand-600 hover:bg-brand-700 text-white active:scale-[0.98]'
+                ? 'bg-slate-900 border border-slate-800 text-slate-600 cursor-not-allowed'
+                : 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-md active:scale-[0.98]'
               }
             `}
           >
-            {isUploading ? 'Procesando...' : 'Subir y procesar PDF'}
+            {isUploading ? 'Procesando Vectores...' : 'Indexar en base de datos'}
           </button>
         </div>
       )}
