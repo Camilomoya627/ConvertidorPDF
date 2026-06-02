@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     allowed_origins: str = "http://localhost:5173"
 
     # 👇 CAMBIO AQUÍ: Nombre exacto del modelo según la API oficial de Groq
+# Volvamos a mapear el modelo con su nomenclatura base estándar
     embedding_model: str = "nomic-embed-text-v1.5"
     chat_model: str = "llama-3.3-70b-versatile"
 
