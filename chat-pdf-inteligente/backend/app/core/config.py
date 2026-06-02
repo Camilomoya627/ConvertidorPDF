@@ -16,8 +16,8 @@ class Settings(BaseSettings):
     max_file_size_mb: int = 10
     allowed_origins: str = "http://localhost:5173"
 
-    # Modelos Gratuitos en Groq
-    embedding_model: str = "nomic-ai/nomic-embed-text-v1.5"
+    # 👇 CAMBIO AQUÍ: Nombre exacto del modelo según la API oficial de Groq
+    embedding_model: str = "nomic-embed-text-v1.5"
     chat_model: str = "llama-3.3-70b-versatile"
 
     # Chunking
