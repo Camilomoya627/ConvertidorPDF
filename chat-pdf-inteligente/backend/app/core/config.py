@@ -4,7 +4,7 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    # Groq (Chat Gratuito)
+    # Groq (Chat y Embeddings Gratuitos)
     groq_api_key: str
 
     # Supabase
@@ -16,8 +16,8 @@ class Settings(BaseSettings):
     max_file_size_mb: int = 10
     allowed_origins: str = "http://localhost:5173"
 
-    # Modelos Gratuitos
-    embedding_model: str = "BAAI/bge-small-en-v1.5"
+    # Modelos Gratuitos en Groq
+    embedding_model: str = "nomic-ai/nomic-embed-text-v1.5"
     chat_model: str = "llama-3.3-70b-versatile"
 
     # Chunking
