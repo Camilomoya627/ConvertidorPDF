@@ -4,8 +4,9 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    # Groq (Chat y Embeddings Gratuitos)
+    # Claves de IA
     groq_api_key: str
+    cohere_api_key: str = "" # Se leerá de las variables de entorno
 
     # Supabase
     supabase_url: str
@@ -16,9 +17,8 @@ class Settings(BaseSettings):
     max_file_size_mb: int = 10
     allowed_origins: str = "http://localhost:5173"
 
-    # 👇 CAMBIO AQUÍ: Nombre exacto del modelo según la API oficial de Groq
-# Volvamos a mapear el modelo con su nomenclatura base estándar
-    embedding_model: str = "nomic-embed-text-v1.5"
+    # Modelos combinados gratis
+    embedding_model: str = "embed-multilingual-v3.0"
     chat_model: str = "llama-3.3-70b-versatile"
 
     # Chunking
@@ -43,6 +43,7 @@ def get_settings() -> Settings:
     if os.getenv("APP_ENV") == "production" or os.getenv("SUPABASE_URL"):
         return Settings(
             groq_api_key=os.getenv("GROQ_API_KEY", "").strip(),
+            cohere_api_key=os.getenv("COHERE_API_KEY", "").strip(),
             supabase_url=os.getenv("SUPABASE_URL", "").strip(),
             supabase_service_key=os.getenv("SUPABASE_SERVICE_KEY", "").strip(),
             app_env=os.getenv("APP_ENV", "production").strip(),
