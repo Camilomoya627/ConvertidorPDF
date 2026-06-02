@@ -18,10 +18,16 @@ app = FastAPI(
     redoc_url="/redoc" if settings.app_env == "development" else None,
 )
 
-# ── CORS ──────────────────────────────────────────────────────────────────────
+# ── CONFIGURACIÓN DE CORS DE MANERA EXPLÍCITA ─────────────────────────────────
+# Definimos los orígenes permitidos de forma directa y segura
+origins = [
+    "http://localhost:5173",
+    "https://convertidorpdf-web.vercel.app"  # 👈 Tu frontend de Vercel autorizado explícitamente
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.origins_list,
+    allow_origins=origins,  # Usamos la lista explícita para evitar fallos de CORS
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
