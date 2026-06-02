@@ -1,4 +1,4 @@
-from openai import AsyncOpenAI
+from groq import AsyncGroq
 from app.core.config import get_settings
 from app.models.schemas import ChatResponse, SourceChunk
 from app.services.embedding_service import generate_embedding
@@ -6,7 +6,8 @@ from app.services.supabase_service import semantic_search, get_document
 from app.core.exceptions import DocumentNotFoundError
 
 settings = get_settings()
-client = AsyncOpenAI(api_key=settings.openai_api_key)
+# Inicializamos el cliente oficial asíncrono de Groq
+client = AsyncGroq(api_key=settings.groq_api_key)
 
 SYSTEM_PROMPT = """Eres un asistente experto en análisis de documentos.
 Responde las preguntas del usuario ÚNICAMENTE basándote en el contexto proporcionado.
@@ -20,32 +21,20 @@ async def answer_question(
     question: str,
     history: list[dict],
 ) -> ChatResponse:
-    """
-    Pipeline RAG completo:
-    1. Verifica que el documento existe.
-    2. Genera embedding de la pregunta.
-    3. Busca chunks relevantes en pgvector.
-    4. Construye el prompt con contexto.
-    5. Llama a OpenAI Chat.
-    6. Retorna respuesta + fuentes.
-    """
-    # 1. Verificar documento
+    """Pipeline RAG completo usando Groq."""
     doc = await get_document(document_id)
     if not doc:
         raise DocumentNotFoundError(document_id)
 
-    # 2. Embedding de la pregunta
     query_embedding = await generate_embedding(question)
 
-    # 3. Búsqueda semántica
     relevant_chunks: list[SourceChunk] = await semantic_search(
         document_id=document_id,
         query_embedding=query_embedding,
         match_count=5,
-        similarity_threshold=0.25,
+        similarity_threshold=0.20, # Reducido levemente para ajustarse a la escala de bge-small
     )
 
-    # 4. Construir contexto
     if relevant_chunks:
         context_parts = []
         for i, chunk in enumerate(relevant_chunks, 1):
@@ -54,7 +43,6 @@ async def answer_question(
     else:
         context = "No se encontraron fragmentos relevantes para esta pregunta."
 
-    # 5. Construir mensajes
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
         {
@@ -64,19 +52,17 @@ async def answer_question(
         {"role": "assistant", "content": "Entendido. Estoy listo para responder preguntas sobre este documento."},
     ]
 
-    # Agregar historial reciente (últimos 6 mensajes = 3 turnos)
     for msg in history[-6:]:
         if msg.get("role") in ("user", "assistant") and msg.get("content"):
             messages.append({"role": msg["role"], "content": msg["content"]})
 
-    # Agregar pregunta actual
     messages.append({"role": "user", "content": question})
 
-    # 6. Llamada a OpenAI
+    # Llamada nativa a la red de Groq
     response = await client.chat.completions.create(
         model=settings.chat_model,
         messages=messages,
-        temperature=0.1,  # Bajo para respuestas más precisas y factuales
+        temperature=0.1,
         max_tokens=1500,
     )
 
