@@ -1,21 +1,18 @@
+import sys
+import os
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.core.config import get_settings
 from app.api.routes import documents, chat
-import sys
-import os
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Tus imports de siempre siguen abajo:
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-# ... (el resto de tu código se queda exactamente igual)
 settings = get_settings()
 
 app = FastAPI(
     title="Chat PDF Inteligente API",
-    description="Sistema RAG para conversar con documentos PDF usando OpenAI y Supabase.",
+    description="Sistema RAG para conversar con documentos PDF usando Cohere, Groq y Supabase.",
     version="1.0.0",
     docs_url="/docs" if settings.app_env == "development" else None,
     redoc_url="/redoc" if settings.app_env == "development" else None,
@@ -40,7 +37,7 @@ app.include_router(chat.router, prefix="/api/v1")
 async def generic_exception_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=500,
-        content={"detail": "Error interno del servidor. Por favor intenta de nuevo."},
+        content={"detail": f"Error interno: {str(exc)}"},
     )
 
 
@@ -52,4 +49,4 @@ async def health():
 
 @app.get("/", tags=["health"])
 async def root():
-    return {"message": "Chat PDF Inteligente API", "docs": "/docs"}
+    return {"message": "Chat PDF Inteligente API"}
