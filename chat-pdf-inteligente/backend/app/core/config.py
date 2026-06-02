@@ -4,8 +4,8 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    # OpenAI
-    openai_api_key: str
+    # Groq (Chat Gratuito)
+    groq_api_key: str
 
     # Supabase
     supabase_url: str
@@ -16,16 +16,15 @@ class Settings(BaseSettings):
     max_file_size_mb: int = 10
     allowed_origins: str = "http://localhost:5173"
 
-    # OpenAI models
-    embedding_model: str = "text-embedding-3-small"
-    chat_model: str = "gpt-4o-mini"
+    # Modelos Gratuitos
+    embedding_model: str = "BAAI/bge-small-en-v1.5"
+    chat_model: str = "llama-3.3-70b-versatile"
 
     # Chunking
     chunk_size: int = 500
     chunk_overlap: int = 50
 
     class Config:
-        # 👇 CAMBIO AQUÍ: Ignora el archivo .env si ya estamos en producción en Render
         env_file = ".env" if os.getenv("APP_ENV") != "production" else None
         case_sensitive = False
 
@@ -40,10 +39,9 @@ class Settings(BaseSettings):
 
 @lru_cache()
 def get_settings() -> Settings:
-    # Si estamos en producción o si las variables esenciales de Supabase existen en el entorno
     if os.getenv("APP_ENV") == "production" or os.getenv("SUPABASE_URL"):
         return Settings(
-            openai_api_key=os.getenv("OPENAI_API_KEY", "").strip(),
+            groq_api_key=os.getenv("GROQ_API_KEY", "").strip(),
             supabase_url=os.getenv("SUPABASE_URL", "").strip(),
             supabase_service_key=os.getenv("SUPABASE_SERVICE_KEY", "").strip(),
             app_env=os.getenv("APP_ENV", "production").strip(),
