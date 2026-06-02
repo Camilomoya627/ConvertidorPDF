@@ -1,13 +1,18 @@
 import asyncio
 import httpx
+import os  # 👈 Importante para leer las variables de Render
 from app.core.config import get_settings
 from app.core.exceptions import EmbeddingError
 
 settings = get_settings()
 
-# API de Inferencia gratuita (No requiere API Key para volúmenes estándar de desarrollo)
+# API de Inferencia gratuita
 HF_API_URL = f"https://api-inference.huggingface.co/pipeline/feature-extraction/{settings.embedding_model}"
 BATCH_SIZE = 32
+
+# 👇 El sistema busca la variable "HF_TOKEN" que configuraste en Render (la que empieza por hf_...)
+HF_TOKEN = os.getenv("HF_TOKEN", "")
+headers = {"Authorization": f"Bearer {HF_TOKEN}"} if HF_TOKEN else {}
 
 
 async def generate_embedding(text: str) -> list[float]:
@@ -16,10 +21,11 @@ async def generate_embedding(text: str) -> list[float]:
         async with httpx.AsyncClient(timeout=30.0) as client:
             response = await client.post(
                 HF_API_URL,
-                json={"inputs": [text], "options": {"wait_for_model": True}}
+                json={"inputs": [text], "options": {"wait_for_model": True}},
+                headers=headers  # 👈 SE AGREGA EL TOKEN AQUÍ
             )
             if response.status_code != 200:
-                raise EmbeddingError(f"HF API respondió con código {response.status_code}")
+                raise EmbeddingError(f"HF API respondió con código {response.status_code}: {response.text}")
             
             result = response.json()
             return result[0]
@@ -37,10 +43,11 @@ async def generate_embeddings_batch(texts: list[str]) -> list[list[float]]:
             async with httpx.AsyncClient(timeout=60.0) as client:
                 response = await client.post(
                     HF_API_URL,
-                    json={"inputs": batch, "options": {"wait_for_model": True}}
+                    json={"inputs": batch, "options": {"wait_for_model": True}},
+                    headers=headers  # 👈 SE AGREGA EL TOKEN AQUÍ TAMBIÉN
                 )
                 if response.status_code != 200:
-                    raise EmbeddingError(f"HF Batch falló con código {response.status_code}")
+                    raise EmbeddingError(f"HF Batch falló con código {response.status_code}: {response.text}")
                 
                 batch_embeddings = response.json()
                 all_embeddings.extend(batch_embeddings)
