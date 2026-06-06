@@ -1,4 +1,4 @@
-# 🧠 Chat PDF Inteligente
+# Chat PDF Inteligente
 
 > Sistema RAG (Retrieval Augmented Generation) para conversar con documentos PDF usando OpenAI y Supabase pgvector.
 
@@ -9,21 +9,21 @@
 
 ---
 
-## ✨ Características
+##  Características
 
-- 📄 **Subida de PDFs** con extracción de texto (PyMuPDF)
-- 🔪 **Chunking inteligente** con overlap para mantener contexto
-- 🧮 **Embeddings semánticos** con `text-embedding-3-small`
-- 🗄️ **Búsqueda vectorial** en Supabase pgvector
-- 💬 **Chat contextual** con `gpt-4o-mini`
-- 📚 **Historial de conversación** en frontend
-- 🔍 **Fuentes citadas** con número de página y similitud
-- 🛡️ **Manejo de errores** completo
-- ⚡ **Deploy listo** para Render + Vercel
+-  **Subida de PDFs** con extracción de texto (PyMuPDF)
+- **Chunking inteligente** con overlap para mantener contexto
+-  **Embeddings semánticos** con `text-embedding-3-small`
+-  **Búsqueda vectorial** en Supabase pgvector
+-  **Chat contextual** con `gpt-4o-mini`
+-  **Historial de conversación** en frontend
+-  **Fuentes citadas** con número de página y similitud
+-  **Manejo de errores** completo
+-  **Deploy listo** para Render + Vercel
 
 ---
 
-## 🏗️ Arquitectura
+##  Arquitectura
 
 ```
 PDF → PyMuPDF → Chunks → OpenAI Embeddings → Supabase pgvector
@@ -35,7 +35,7 @@ Question → OpenAI Embedding → Búsqueda semántica → Top-K chunks
 
 ---
 
-## 📁 Estructura del proyecto
+##  Estructura del proyecto
 
 ```
 chat-pdf-inteligente/
@@ -81,7 +81,7 @@ chat-pdf-inteligente/
 
 ---
 
-## 🚀 Instalación local
+##  Instalación local
 
 ### Prerrequisitos
 
@@ -146,7 +146,7 @@ El frontend estará en `http://localhost:5173`
 
 ---
 
-## 🌐 Deploy
+##  Deploy
 
 ### Backend → Render
 
@@ -169,7 +169,7 @@ O conectar el repositorio en [vercel.com](https://vercel.com) y configurar:
 
 ---
 
-## 🔧 Variables de entorno
+##  Variables de entorno
 
 ### Backend `.env`
 
@@ -202,7 +202,7 @@ VITE_API_URL=http://localhost:8000
 
 ---
 
-## 🤖 Modelos OpenAI usados
+##  Modelos OpenAI usados
 
 | Uso | Modelo | Coste |
 |-----|--------|-------|
@@ -211,6 +211,6 @@ VITE_API_URL=http://localhost:8000
 
 ---
 
-## 📝 Licencia
+##  Licencia
 
 MIT — libre para uso personal y comercial.
